@@ -38,9 +38,9 @@ public class LoginScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText firstName = findViewById(R.id.edtFirstName);
+        final EditText firstName = findViewById(R.id.edtFirstName);
         final EditText firstName2 = findViewById(R.id.edtFirstName2);
-        EditText lastName = findViewById(R.id.edtLastName);
+        final EditText lastName = findViewById(R.id.edtLastName);
         final EditText lastName2 = findViewById(R.id.edtLastName2);
         Button login = findViewById(R.id.btnLogin);
         Button create = findViewById(R.id.btnCreate);
@@ -52,7 +52,7 @@ public class LoginScreen extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String FullName = firstName2.getText().toString().toLowerCase().trim() + " " + lastName2.getText().toString().toLowerCase().trim();
+                final String FullName = firstName.getText().toString().toLowerCase().trim() + " " + lastName.getText().toString().toLowerCase().trim();
                 db.collection("User's Names").document("Users")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -61,21 +61,24 @@ public class LoginScreen extends AppCompatActivity {
                                 DocumentSnapshot document = task.getResult();
                                 if (!document.exists())
                                 {
-                                    Toast.makeText(getApplicationContext(), "No one signed up yet. Be the first one sign up below", Toast.LENGTH_LONG);
+                                    Toast.makeText(getApplicationContext(), "No one signed up yet. Be the first one sign up below", Toast.LENGTH_LONG).show();
                                 }
                                 Map<String, Object> tmp = document.getData();
                                 final boolean[] notfound = {true};
+                                System.out.println(tmp.toString());
                                 for (Map.Entry<String, Object> entry : tmp.entrySet()) {
+                                    System.out.println(entry.getValue().toString().equals(FullName));
                                    if (entry.getValue().equals(FullName))
                                    {
                                        notfound[0] = false;
-                                       Toast.makeText(getApplicationContext(), "Found your Account. Logging in...", Toast.LENGTH_SHORT);
+                                       System.out.println("HI");
+                                       Toast.makeText(getApplicationContext(), "Found your Account. Logging in...", Toast.LENGTH_SHORT).show();
                                    }
 
                                 }
-                                if (notfound[0] == false)
+                                if (notfound[0] == true)
                                 {
-                                    Toast.makeText(getApplicationContext(), "Credentials were not found. Create an account below.", Toast.LENGTH_LONG);
+                                    Toast.makeText(getApplicationContext(), "Credentials were not found. Create an account below.", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
