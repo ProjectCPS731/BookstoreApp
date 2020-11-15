@@ -1,5 +1,6 @@
 package com.example.bookstoreapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ public class LoginScreen extends AppCompatActivity {
     public static final String ID_Key = "ID";
     public static final String FirstN_Key = "First Name";
     public static final String LastN_Key = "Last Name";
+    public static final NameOfUser nou = new NameOfUser();
 
     List<NameOfUser> dataList = new ArrayList<>();
 
@@ -74,8 +76,11 @@ public class LoginScreen extends AppCompatActivity {
                                    if (entry.getValue().equals(FullName))
                                    {
                                        notfound[0] = false;
+                                       nou.setFullName(FullName);
+                                       nou.setID(entry.getKey());
                                        //System.out.println("HI");
                                        Toast.makeText(getApplicationContext(), "Found your Account. Logging in...", Toast.LENGTH_SHORT).show();
+                                       startActivity(new Intent(LoginScreen.this, SearchScreen.class));
                                    }
 
                                 }
@@ -113,6 +118,9 @@ public class LoginScreen extends AppCompatActivity {
                                     database.userDAO().insert(data);
                                     dataList.clear();
                                     dataList.addAll(database.userDAO().getAll());
+                                    nou.setFullName(FullName);
+                                    nou.setID(randid2[0] + "");
+                                    startActivity(new Intent(LoginScreen.this, SearchScreen.class));
 
                                 }
                                 else
@@ -149,11 +157,18 @@ public class LoginScreen extends AppCompatActivity {
                                         database.userDAO().insert(data);
                                         dataList.clear();
                                         dataList.addAll(database.userDAO().getAll());
+                                        nou.setFullName(FullName);
+                                        nou.setID(randid2[0] + "");
+                                        startActivity(new Intent(LoginScreen.this, SearchScreen.class));
                                     }
                                 }
                             }
                         });
             }
         });
+    }
+    public static NameOfUser getNameOfUser()
+    {
+        return nou;
     }
 }
