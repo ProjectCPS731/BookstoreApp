@@ -1,37 +1,36 @@
 package com.example.bookstoreapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class LoginScreen extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static final String ID_Key = "ID";
     public static final String FirstN_Key = "First Name";
     public static final String LastN_Key = "Last Name";
+    public static final NameOfUser nou = new NameOfUser();
+
+    List<NameOfUser> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +48,17 @@ public class LoginScreen extends AppCompatActivity {
         final Map<String, String> user = new HashMap<>();
         //user.put("0", "test test");
         //db.collection("User's Names").document("Users").get().then();
+
+        final RoomDB database;
+        database = RoomDB.getInstance(this);
+        dataList = database.userDAO().getAll();
+        //dataList.clear();
+        //test.setText(dataList.get(1).getID());
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String FullName = firstName.getText().toString().toLowerCase().trim() + " " + lastName.getText().toString().toLowerCase().trim();
-                db.collection("User's Names").document("Users")
+                db.collection("Users Names").document("Users")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -71,8 +76,11 @@ public class LoginScreen extends AppCompatActivity {
                                    if (entry.getValue().equals(FullName))
                                    {
                                        notfound[0] = false;
-                                       System.out.println("HI");
+                                       nou.setFullName(FullName);
+                                       nou.setID(entry.getKey());
+                                       //System.out.println("HI");
                                        Toast.makeText(getApplicationContext(), "Found your Account. Logging in...", Toast.LENGTH_SHORT).show();
+                                       startActivity(new Intent(LoginScreen.this, SearchScreen.class));
                                    }
 
                                 }
@@ -85,6 +93,7 @@ public class LoginScreen extends AppCompatActivity {
             }
         });
 
+        //final List<NameOfUser> finalDataList = dataList;
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,8 +101,9 @@ public class LoginScreen extends AppCompatActivity {
                 final Random random = new Random();
                 final boolean[] notfound = {true};
                 final int[] randid2 = {random.nextInt((10000 - 1) + 1) + 1};
-                String t = "Users" + randid2;
-                db.collection("User's Names").document("Users")
+                //String t = "Users" + randid2;
+                final NameOfUser data = new NameOfUser();
+                db.collection("Users Names").document("Users")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -102,7 +112,16 @@ public class LoginScreen extends AppCompatActivity {
                                 if (!document.exists())
                                 {
                                     user.put(randid2[0] + "", FullName);
-                                    db.collection("User's Names").document("Users").set(user, SetOptions.merge());
+                                    db.collection("Users Names").document("Users").set(user, SetOptions.merge());
+                                    data.setID(randid2[0] + "");
+                                    data.setFullName(FullName);
+                                    database.userDAO().insert(data);
+                                    dataList.clear();
+                                    dataList.addAll(database.userDAO().getAll());
+                                    nou.setFullName(FullName);
+                                    nou.setID(randid2[0] + "");
+                                    startActivity(new Intent(LoginScreen.this, SearchScreen.class));
+
                                 }
                                 else
                                 {
@@ -132,12 +151,24 @@ public class LoginScreen extends AppCompatActivity {
                                     {
                                         //System.out.println("Hi");
                                         user.put(randid2[0] + "", FullName);
-                                        db.collection("User's Names").document("Users").set(user, SetOptions.merge());
+                                        db.collection("Users Names").document("Users").set(user, SetOptions.merge());
+                                        data.setID(randid2[0] + "");
+                                        data.setFullName(FullName);
+                                        database.userDAO().insert(data);
+                                        dataList.clear();
+                                        dataList.addAll(database.userDAO().getAll());
+                                        nou.setFullName(FullName);
+                                        nou.setID(randid2[0] + "");
+                                        startActivity(new Intent(LoginScreen.this, SearchScreen.class));
                                     }
                                 }
                             }
                         });
             }
         });
+    }
+    public static NameOfUser getNameOfUser()
+    {
+        return nou;
     }
 }

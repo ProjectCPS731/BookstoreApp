@@ -1,40 +1,39 @@
 package com.example.bookstoreapp;
 
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import java.io.Serializable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-public class NameOfUser {
-    private String FirstName;
-    private String LastName;
+@Entity(tableName = "Users_Names")
+public class NameOfUser implements Serializable {
+    @NonNull
+    @PrimaryKey
     private String ID;
+    @ColumnInfo(name = "Full Name")
+    private String FullName;
 
-    public NameOfUser(String FN, String LN, String id)
-    {
-        FirstName = FN;
-        LastName = LN;
-        ID = id;
+    public String getID() {
+        return ID;
     }
-    public NameOfUser(String FN, String LN)
-    {
-        FirstName = FN;
-        LastName = LN;
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getFullName() {
+        return FullName;
+    }
+
+    public void setFullName(String fullName) {
+        FullName = fullName;
     }
 
     public int checkIfUserExists(final String FullName)
     {
-        final Map<String, String> user = new HashMap<>();
+        /*final Map<String, String> user = new HashMap<>();
 
         final Random random = new Random();
         final boolean[] notfound = {true};
@@ -73,7 +72,7 @@ public class NameOfUser {
         if (notfound[0])
         {
             return randid2[0];
-        }
+        }*/
         return 0;
     }
 }
