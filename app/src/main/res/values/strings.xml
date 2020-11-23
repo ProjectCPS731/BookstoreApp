@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BookstoreApp</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_map_key">AIzaSyDQe1ymj9O1lOiW4xy3WOsNSn83GnPEVR8</string>
 </resources>

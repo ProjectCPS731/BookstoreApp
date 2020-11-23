@@ -29,6 +29,7 @@ import java.util.Random;
 public class SearchScreen extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<RecentSearches> dataList = new ArrayList<>();
+    private static String tmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,6 +48,7 @@ public class SearchScreen extends AppCompatActivity {
         database = RoomDB2.getInstance(this);
         dataList = database.SearchDAO().getAll();
         //database.SearchDAO().reset(dataList);
+
 
 
 
@@ -85,6 +87,7 @@ public class SearchScreen extends AppCompatActivity {
                     final int[] randid2 = {random.nextInt((10000 - 1) + 1) + 1};
                     final boolean[] notfound = {true};
                     final String book = booktitle.getText().toString().trim();
+                    tmp = booktitle.getText().toString().trim();
                     final RecentSearches RS = new RecentSearches();
 
                     db.collection("Users Searches").document("User " + nou.getID())
@@ -133,5 +136,9 @@ public class SearchScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+    public static String booktitle()
+    {
+        return tmp;
     }
 }
